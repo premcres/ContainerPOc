@@ -70,13 +70,16 @@ objects:
             value: ${GRID_UNREGISTER_IF_STILL_DOWN_AFTER}
           image: selenium/hub:4.1.0-20211123
           name: master
+          resources:
+             requests:
+             memory: "64Mi"
+             cpu: "250m"
+          limits:
+             memory: "128Mi"
+             cpu: "500m"
           ports:
           - containerPort: 4444
             protocol: TCP
-           resources:
-            -limits:
-              cpu: 1k
-              memory: 2Gi
 - apiVersion: v1
   kind: Route
   metadata:
