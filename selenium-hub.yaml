@@ -1,140 +1,109 @@
-kind: DeploymentConfig
-apiVersion: apps.openshift.io/v1
+kind: Deployment
+apiVersion: apps/v1
 metadata:
+  annotations:
+    deployment.kubernetes.io/revision: '2'
+  resourceVersion: '16408633'
   name: selenium-hub
-  namespace: selenium-infra
-  uid: 0bd3fd85-56b2-44a6-adce-348211ab64c2
-  resourceVersion: '16462172'
-  generation: 11
-  creationTimestamp: '2021-12-27T10:53:45Z'
-  labels:
-    selenium-hub: master
+  uid: 597c5dda-970e-44d9-8f2c-77271664a498
+  creationTimestamp: '2021-12-28T10:08:18Z'
+  generation: 24
   managedFields:
-    - manager: kubectl-create
+    - manager: Mozilla
       operation: Update
-      apiVersion: apps.openshift.io/v1
-      time: '2021-12-27T10:53:45Z'
+      apiVersion: apps/v1
+      time: '2021-12-28T10:08:18Z'
       fieldsType: FieldsV1
       fieldsV1:
         'f:metadata':
           'f:labels':
             .: {}
-            'f:selenium-hub': {}
+            'f:app': {}
         'f:spec':
-          'f:replicas': {}
-          'f:selector':
-            .: {}
-            'f:type': {}
+          'f:progressDeadlineSeconds': {}
+          'f:revisionHistoryLimit': {}
+          'f:selector': {}
           'f:strategy':
-            'f:activeDeadlineSeconds': {}
-            'f:rollingParams':
+            'f:rollingUpdate':
               .: {}
-              'f:intervalSeconds': {}
               'f:maxSurge': {}
               'f:maxUnavailable': {}
-              'f:timeoutSeconds': {}
-              'f:updatePeriodSeconds': {}
             'f:type': {}
           'f:template':
-            .: {}
             'f:metadata':
-              .: {}
-              'f:creationTimestamp': {}
               'f:labels':
                 .: {}
-                'f:type': {}
-              'f:name': {}
+                'f:app': {}
             'f:spec':
-              .: {}
               'f:containers':
-                .: {}
-                'k:{"name":"master"}':
+                'k:{"name":"selenium-hub"}':
+                  'f:image': {}
+                  'f:terminationMessagePolicy': {}
                   .: {}
-                  'f:env':
-                    'k:{"name":"GRID_UNREGISTER_IF_STILL_DOWN_AFTER"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_CLEAN_UP_CYCLE"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"POOL_MAX"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_MAX_SESSION"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_NEW_SESSION_WAIT_TIMEOUT"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_TIMEOUT"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
+                  'f:resources':
                     .: {}
-                    'k:{"name":"JAVA_OPTS"}':
+                    'f:limits':
                       .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_NODE_POLLING"}':
+                      'f:cpu': {}
+                      'f:memory': {}
+                  'f:livenessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
                       .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_BROWSER_TIMEOUT"}':
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:readinessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
                       .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"GRID_JETTY_MAX_THREADS"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:terminationMessagePath': {}
                   'f:imagePullPolicy': {}
-                  'f:name': {}
                   'f:ports':
                     .: {}
+                    'k:{"containerPort":4442,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:protocol': {}
+                    'k:{"containerPort":4443,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:protocol': {}
                     'k:{"containerPort":4444,"protocol":"TCP"}':
                       .: {}
                       'f:containerPort': {}
                       'f:protocol': {}
-                  'f:resources': {}
-                  'f:terminationMessagePath': {}
-                  'f:terminationMessagePolicy': {}
+                  'f:name': {}
               'f:dnsPolicy': {}
               'f:restartPolicy': {}
               'f:schedulerName': {}
               'f:securityContext': {}
               'f:terminationGracePeriodSeconds': {}
-          'f:triggers': {}
-    - manager: Mozilla
+    - manager: kube-controller-manager
       operation: Update
-      apiVersion: apps.openshift.io/v1
-      time: '2022-01-03T08:07:25Z'
+      apiVersion: apps/v1
+      time: '2022-01-03T06:04:04Z'
       fieldsType: FieldsV1
       fieldsV1:
-        'f:spec':
-          'f:template':
-            'f:spec':
-              'f:containers':
-                'k:{"name":"master"}':
-                  'f:image': {}
-                  'f:resources':
-                    'f:limits':
-                      .: {}
-                      'f:cpu': {}
-                      'f:memory': {}
-    - manager: openshift-controller-manager
-      operation: Update
-      apiVersion: apps.openshift.io/v1
-      time: '2022-01-03T08:07:28Z'
-      fieldsType: FieldsV1
-      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:deployment.kubernetes.io/revision': {}
         'f:status':
-          'f:updatedReplicas': {}
-          'f:readyReplicas': {}
+          'f:availableReplicas': {}
           'f:conditions':
             .: {}
             'k:{"type":"Available"}':
@@ -142,6 +111,7 @@ metadata:
               'f:lastTransitionTime': {}
               'f:lastUpdateTime': {}
               'f:message': {}
+              'f:reason': {}
               'f:status': {}
               'f:type': {}
             'k:{"type":"Progressing"}':
@@ -152,101 +122,90 @@ metadata:
               'f:reason': {}
               'f:status': {}
               'f:type': {}
-          'f:details':
-            .: {}
-            'f:causes': {}
-            'f:message': {}
-          'f:replicas': {}
-          'f:availableReplicas': {}
           'f:observedGeneration': {}
-          'f:unavailableReplicas': {}
-          'f:latestVersion': {}
+          'f:readyReplicas': {}
+          'f:replicas': {}
+          'f:updatedReplicas': {}
       subresource: status
+  namespace: seleniumpoc
+  labels:
+    app: selenium-hub
 spec:
-  strategy:
-    type: Rolling
-    rollingParams:
-      updatePeriodSeconds: 1
-      intervalSeconds: 1
-      timeoutSeconds: 600
-      maxUnavailable: 25%
-      maxSurge: 25%
-    resources: {}
-    activeDeadlineSeconds: 21600
-  triggers:
-    - type: ConfigChange
   replicas: 1
-  revisionHistoryLimit: 10
-  test: false
   selector:
-    type: selenium-hub
+    matchLabels:
+      app: selenium-hub
   template:
     metadata:
-      name: selenium-hub
       creationTimestamp: null
       labels:
-        type: selenium-hub
+        app: selenium-hub
     spec:
       containers:
-        - name: master
-          image: 'selenium/hub:4.1.0-20211123'
+        - resources:
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          readinessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: 4444
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: selenium-hub
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: 4444
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
           ports:
             - containerPort: 4444
               protocol: TCP
-          env:
-            - name: JAVA_OPTS
-              value: '-Xmx512m'
-            - name: POOL_MAX
-              value: '30000'
-            - name: GRID_NEW_SESSION_WAIT_TIMEOUT
-              value: '30'
-            - name: GRID_JETTY_MAX_THREADS
-              value: '100'
-            - name: GRID_NODE_POLLING
-              value: '150'
-            - name: GRID_CLEAN_UP_CYCLE
-              value: '300'
-            - name: GRID_TIMEOUT
-              value: '300'
-            - name: GRID_BROWSER_TIMEOUT
-              value: '30'
-            - name: GRID_MAX_SESSION
-              value: '3'
-            - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
-              value: '500'
-          resources:
-            limits:
-              cpu: 1k
-              memory: 2Gi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
+            - containerPort: 4443
+              protocol: TCP
+            - containerPort: 4442
+              protocol: TCP
           imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          image: 'selenium/hub:4.1.0-20211123'
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
       securityContext: {}
       schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
 status:
-  observedGeneration: 11
-  details:
-    message: config change
-    causes:
-      - type: ConfigChange
-  availableReplicas: 1
-  unavailableReplicas: 1
-  latestVersion: 3
+  observedGeneration: 24
+  replicas: 1
   updatedReplicas: 1
+  readyReplicas: 1
+  availableReplicas: 1
   conditions:
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2021-12-29T14:03:10Z'
-      lastTransitionTime: '2021-12-29T14:03:10Z'
-      message: Deployment config has minimum availability.
     - type: Progressing
       status: 'True'
-      lastUpdateTime: '2022-01-03T08:07:28Z'
-      lastTransitionTime: '2022-01-03T08:07:28Z'
-      reason: ReplicationControllerUpdated
-      message: replication controller "selenium-hub-3" is progressing
-  replicas: 2
-  readyReplicas: 1
+      lastUpdateTime: '2021-12-28T12:43:42Z'
+      lastTransitionTime: '2021-12-28T10:08:18Z'
+      reason: NewReplicaSetAvailable
+      message: ReplicaSet "selenium-hub-646f69f5cd" has successfully progressed.
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2022-01-03T06:04:04Z'
+      lastTransitionTime: '2022-01-03T06:04:04Z'
+      reason: MinimumReplicasAvailable
+      message: Deployment has minimum availability.
