@@ -2,7 +2,7 @@ kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
 metadata:
   name: selenium-hub
-  namespace: sele
+  namespace: selenium-infra
   uid: 0bd3fd85-56b2-44a6-adce-348211ab64c2
   resourceVersion: '16462172'
   generation: 11
