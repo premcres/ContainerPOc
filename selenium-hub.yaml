@@ -47,6 +47,10 @@ objects:
         name: selenium-hub
       spec:
         containers:
+        - resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         - env:
           - name: JAVA_OPTS
             value: ${JAVA_OPTS}
