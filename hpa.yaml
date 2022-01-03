@@ -3,14 +3,14 @@ apiVersion: autoscaling/v2beta2
 metadata:
   name: example
   namespace: selenium-infra
-  uid: 1db2c442-970a-4a5f-91ce-2cf130dac2ab
-  resourceVersion: '16567996'
-  creationTimestamp: '2022-01-03T11:56:53Z'
+  uid: d8c33ba6-c6ed-4abc-ba61-d037d0cf9a8a
+  resourceVersion: '16580282'
+  creationTimestamp: '2022-01-03T12:18:00Z'
   managedFields:
-    - manager: kubectl-create
+    - manager: Mozilla
       operation: Update
       apiVersion: autoscaling/v2beta2
-      time: '2022-01-03T11:56:53Z'
+      time: '2022-01-03T12:18:00Z'
       fieldsType: FieldsV1
       fieldsV1:
         'f:spec':
@@ -24,7 +24,7 @@ metadata:
     - manager: kube-controller-manager
       operation: Update
       apiVersion: autoscaling/v1
-      time: '2022-01-03T11:57:08Z'
+      time: '2022-01-03T12:18:30Z'
       fieldsType: FieldsV1
       fieldsV1:
         'f:metadata':
@@ -34,11 +34,12 @@ metadata:
         'f:status':
           'f:currentReplicas': {}
           'f:desiredReplicas': {}
+          'f:lastScaleTime': {}
       subresource: status
 spec:
   scaleTargetRef:
     kind: DeploymentConfig
-    name: selenium-hub
+    name: selenium-node-chrome
     apiVersion: apps.openshift.io/v1
   minReplicas: 4
   maxReplicas: 20
@@ -48,32 +49,35 @@ spec:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 15
+          averageUtilization: 10
 status:
-  currentReplicas: 1
-  desiredReplicas: 1
+  lastScaleTime: '2022-01-03T12:18:15Z'
+  currentReplicas: 4
+  desiredReplicas: 4
   currentMetrics:
     - type: Resource
       resource:
         name: memory
         current:
-          averageValue: '221020160'
-          averageUtilization: 10
+          averageValue: '153353216'
+          averageUtilization: 7
   conditions:
     - type: AbleToScale
       status: 'True'
-      lastTransitionTime: '2022-01-03T11:57:08Z'
-      reason: ReadyForNewScale
-      message: recommended size matches current size
+      lastTransitionTime: '2022-01-03T12:18:15Z'
+      reason: ScaleDownStabilized
+      message: >-
+        recent recommendations were higher than current one, applying the
+        highest recent recommendation
     - type: ScalingActive
       status: 'True'
-      lastTransitionTime: '2022-01-03T11:57:08Z'
+      lastTransitionTime: '2022-01-03T12:18:30Z'
       reason: ValidMetricFound
       message: >-
         the HPA was able to successfully calculate a replica count from memory
         resource utilization (percentage of request)
     - type: ScalingLimited
       status: 'False'
-      lastTransitionTime: '2022-01-03T11:57:08Z'
+      lastTransitionTime: '2022-01-03T12:18:30Z'
       reason: DesiredWithinRange
       message: the desired count is within the acceptable range
