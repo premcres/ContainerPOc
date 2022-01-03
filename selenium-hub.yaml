@@ -73,6 +73,10 @@ objects:
           ports:
           - containerPort: 4444
             protocol: TCP
+           resources:
+            -limits:
+              cpu: 1k
+              memory: 2Gi
 - apiVersion: v1
   kind: Route
   metadata:
