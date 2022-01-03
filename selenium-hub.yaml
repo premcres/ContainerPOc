@@ -70,10 +70,7 @@ objects:
             value: ${GRID_UNREGISTER_IF_STILL_DOWN_AFTER}
           image: selenium/hub:4.1.0-20211123
           name: master
-          resources:
-             requests:
-             memory: "64Mi"
-             cpu: "250m"
+          - resources:
           limits:
              memory: "128Mi"
              cpu: "500m"
