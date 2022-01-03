@@ -47,6 +47,10 @@ objects:
         name: selenium-hub
       spec:
         containers:
+        - resources:
+          limits:
+             memory: "128Mi"
+             cpu: "500m"
         - env:
           - name: JAVA_OPTS
             value: ${JAVA_OPTS}
@@ -70,10 +74,6 @@ objects:
             value: ${GRID_UNREGISTER_IF_STILL_DOWN_AFTER}
           image: selenium/hub:4.1.0-20211123
           name: master
-          - resources:
-          limits:
-             memory: "128Mi"
-             cpu: "500m"
           ports:
           - containerPort: 4444
             protocol: TCP
