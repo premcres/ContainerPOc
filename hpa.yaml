@@ -1,0 +1,79 @@
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2beta2
+metadata:
+  name: example
+  namespace: selenium-infra
+  uid: 1db2c442-970a-4a5f-91ce-2cf130dac2ab
+  resourceVersion: '16567996'
+  creationTimestamp: '2022-01-03T11:56:53Z'
+  managedFields:
+    - manager: kubectl-create
+      operation: Update
+      apiVersion: autoscaling/v2beta2
+      time: '2022-01-03T11:56:53Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:maxReplicas': {}
+          'f:metrics': {}
+          'f:minReplicas': {}
+          'f:scaleTargetRef':
+            'f:apiVersion': {}
+            'f:kind': {}
+            'f:name': {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: autoscaling/v1
+      time: '2022-01-03T11:57:08Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:autoscaling.alpha.kubernetes.io/conditions': {}
+            'f:autoscaling.alpha.kubernetes.io/current-metrics': {}
+        'f:status':
+          'f:currentReplicas': {}
+          'f:desiredReplicas': {}
+      subresource: status
+spec:
+  scaleTargetRef:
+    kind: DeploymentConfig
+    name: selenium-hub
+    apiVersion: apps.openshift.io/v1
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 10
+status:
+  currentReplicas: 1
+  desiredReplicas: 1
+  currentMetrics:
+    - type: Resource
+      resource:
+        name: memory
+        current:
+          averageValue: '221020160'
+          averageUtilization: 10
+  conditions:
+    - type: AbleToScale
+      status: 'True'
+      lastTransitionTime: '2022-01-03T11:57:08Z'
+      reason: ReadyForNewScale
+      message: recommended size matches current size
+    - type: ScalingActive
+      status: 'True'
+      lastTransitionTime: '2022-01-03T11:57:08Z'
+      reason: ValidMetricFound
+      message: >-
+        the HPA was able to successfully calculate a replica count from memory
+        resource utilization (percentage of request)
+    - type: ScalingLimited
+      status: 'False'
+      lastTransitionTime: '2022-01-03T11:57:08Z'
+      reason: DesiredWithinRange
+      message: the desired count is within the acceptable range
