@@ -127,7 +127,7 @@ metadata:
           'f:replicas': {}
           'f:updatedReplicas': {}
       subresource: status
-  namespace: seleniumpoc
+  namespace: selenium-infra
   labels:
     app: selenium-hub
 spec:
