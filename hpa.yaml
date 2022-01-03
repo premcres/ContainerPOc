@@ -40,15 +40,15 @@ spec:
     kind: DeploymentConfig
     name: selenium-hub
     apiVersion: apps.openshift.io/v1
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: 4
+  maxReplicas: 20
   metrics:
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 10
+          averageUtilization: 15
 status:
   currentReplicas: 1
   desiredReplicas: 1
