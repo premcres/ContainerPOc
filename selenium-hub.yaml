@@ -1,96 +1,121 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: selenium-node-chrome
+  name: selenium-hub
   annotations:
-    description: "Selenium Node with Google Chrome browser"
+    description: "A Selenium Grid"
     iconClass: "icon-selenium"
-    tags: "selenium,node,chrome"
+    tags: "selenium,hub"
 objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: selenium-hub
+  spec:
+    selector:
+      type: selenium-hub
+    type: ClusterIP
+    ports:
+    - name: web
+      port: 4444
+      targetPort: 4444
+      protocol: TCP
+    - name: node
+      port: 5555
+      targetPort: 5555
+      protocol: TCP
+    - name: publish
+      port: 4442
+      targetPort: 4442
+      protocol: TCP
+    - name: subscribe
+      port: 4443
+      targetPort: 4443
+      protocol: TCP
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: selenium-node-chrome
+    name: selenium-hub
   spec:
-    strategy:
-      type: Recreate
     replicas: 1
     selector:
-      browser: chrome
+      type: selenium-hub
     template:
       metadata:
-        name: selenium-node-chrome-master
         labels:
-          browser: chrome
+          type: selenium-hub
+        name: selenium-hub
       spec:
         containers:
         - env:
           - name: JAVA_OPTS
             value: ${JAVA_OPTS}
-          - name: SE_OPTS
-            value: ${SE_OPTS}
-          - name: HUB_PORT_4444_TCP_ADDR
-            value: ${HUB_PORT_4444_TCP_ADDR}
-          - name: HUB_PORT_4444_TCP_PORT
-            value: ${HUB_PORT_4444_TCP_PORT}
-          - name: REMOTE_HOST
-            value: ${REMOTE_HOST}
-          - name: SE_EVENT_BUS_HOST
-            value: ${SE_EVENT_BUS_HOST}
-          - name: SE_EVENT_BUS_PUBLISH_PORT
-            value: ${SE_EVENT_BUS_PUBLISH_PORT}
-          - name: SE_EVENT_BUS_SUBSCRIBE_PORT
-            value: ${SE_EVENT_BUS_SUBSCRIBE_PORT}
-          image: selenium/node-chrome:4.0.0
+          - name: POOL_MAX
+            value: ${POOL_MAX}
+          - name: GRID_NEW_SESSION_WAIT_TIMEOUT
+            value: ${GRID_NEW_SESSION_WAIT_TIMEOUT}
+          - name: GRID_JETTY_MAX_THREADS
+            value: ${GRID_JETTY_MAX_THREADS}
+          - name: GRID_NODE_POLLING
+            value: ${GRID_NODE_POLLING}
+          - name: GRID_CLEAN_UP_CYCLE
+            value: ${GRID_CLEAN_UP_CYCLE}
+          - name: GRID_TIMEOUT
+            value: ${GRID_TIMEOUT}
+          - name: GRID_BROWSER_TIMEOUT
+            value: ${GRID_BROWSER_TIMEOUT}
+          - name: GRID_MAX_SESSION
+            value: ${GRID_MAX_SESSION}
+          - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
+            value: ${GRID_UNREGISTER_IF_STILL_DOWN_AFTER}
+          image: selenium/hub:4.0.0
           name: master
           ports:
           - containerPort: 4444
             protocol: TCP
-          - containerPort: 5555
-            protocol: TCP
 - apiVersion: v1
-  kind: Service
+  kind: Route
   metadata:
-    name: selenium-node-chrome
+    name: selenium-hub
   spec:
-    selector:
-      browser: chrome
-    type: ClusterIP
-    ports:
-    - name: node-port
-      port: 5555
-      targetPort: 5555
-      protocol: TCP
-    - name: node-port-grid
-      port: 4444
+    host: ${HUB_ROUTE}
+    port:
       targetPort: 4444
-      protocol: TCP
+    to:
+      kind: Service
+      name: selenium-hub
 parameters:
+  - name: HUB_ROUTE
+    description: Route name for the Selenium Hub
   - name: JAVA_OPTS
-    description: Options for the Java command
-    value: "-Xmx512m -Dselenium.LOGGER.level=WARNING"
-  - name: SE_OPTS
-    description: Options for the Node
-    value: ""
-  - name: HUB_PORT_4444_TCP_ADDR
-    description: The Hub to connect to
-    value: "selenium-hub"
-  - name: HUB_PORT_4444_TCP_PORT
-    description: The Hub port to connect to
-    value: "4444"
-  - name: REMOTE_HOST
-    description: The remote host
-    value: ""
-  - name: NODE_ID
-    description: Unique ID assigned to the node
-    generate: expression
-    from: '[a-z]{4}'
-  - name: SE_EVENT_BUS_HOST
-    description: The selenium event hub host
-    value: "selenium-hub"
-  - name: SE_EVENT_BUS_PUBLISH_PORT
-    description: The publish port
-    value: "4442"
-  - name: SE_EVENT_BUS_SUBSCRIBE_PORT
-    description: The subscribe port
-    value: "4443"
+    description: Options to pass to the java command
+    value: "-Xmx512m"
+  - name: POOL_MAX
+    description: Max thread count for incoming and outgoing connections
+    value: "30000"
+  - name: GRID_NEW_SESSION_WAIT_TIMEOUT
+    description: The timeout to wait for new sessions
+    value: "30"
+  - name: GRID_JETTY_MAX_THREADS
+    description: Max Threads for Jetty server
+    value: "100"
+  - name: GRID_NODE_POLLING
+    description: Node Polling setting
+    value: "150"
+  - name: GRID_CLEAN_UP_CYCLE
+    description: How long to wait until cleanup on nodes
+    value: "300"
+  - name: GRID_TIMEOUT
+    description: The timeout for the grid
+    value: "300"
+  - name: GRID_BROWSER_TIMEOUT
+    description: The timeout for the browser
+    value: "30"
+  - name: GRID_MAX_SESSION
+    description: How many sessions max
+    value: "3"
+  - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
+    description: Time to wait before unregistering nodes
+    value: "500"
+labels:
+  selenium-hub: master
