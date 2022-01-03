@@ -1,199 +1,96 @@
-kind: Deployment
-apiVersion: apps/v1
+apiVersion: v1
+kind: Template
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: '5'
-  resourceVersion: '16413396'
   name: selenium-node-chrome
-  uid: c6f9f3ea-736c-46ac-af1c-06a20abb7277
-  creationTimestamp: '2021-12-28T10:08:53Z'
-  generation: 61
-  managedFields:
-    - manager: Mozilla
-      operation: Update
-      apiVersion: apps/v1
-      time: '2021-12-28T10:08:53Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:app': {}
-        'f:spec':
-          'f:progressDeadlineSeconds': {}
-          'f:revisionHistoryLimit': {}
-          'f:selector': {}
-          'f:strategy':
-            'f:rollingUpdate':
-              .: {}
-              'f:maxSurge': {}
-              'f:maxUnavailable': {}
-            'f:type': {}
-          'f:template':
-            'f:metadata':
-              'f:labels':
-                .: {}
-                'f:app': {}
-            'f:spec':
-              'f:containers':
-                'k:{"name":"selenium-node-chrome"}':
-                  'f:image': {}
-                  'f:volumeMounts':
-                    .: {}
-                    'k:{"mountPath":"/dev/shm"}':
-                      .: {}
-                      'f:mountPath': {}
-                      'f:name': {}
-                  'f:terminationMessagePolicy': {}
-                  .: {}
-                  'f:resources':
-                    .: {}
-                    'f:limits':
-                      .: {}
-                      'f:cpu': {}
-                      'f:memory': {}
-                  'f:env':
-                    .: {}
-                    'k:{"name":"SE_EVENT_BUS_HOST"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"SE_EVENT_BUS_PUBLISH_PORT"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                    'k:{"name":"SE_EVENT_BUS_SUBSCRIBE_PORT"}':
-                      .: {}
-                      'f:name': {}
-                      'f:value': {}
-                  'f:terminationMessagePath': {}
-                  'f:imagePullPolicy': {}
-                  'f:ports':
-                    .: {}
-                    'k:{"containerPort":5555,"protocol":"TCP"}':
-                      .: {}
-                      'f:containerPort': {}
-                      'f:protocol': {}
-                  'f:name': {}
-              'f:dnsPolicy': {}
-              'f:restartPolicy': {}
-              'f:schedulerName': {}
-              'f:securityContext': {}
-              'f:terminationGracePeriodSeconds': {}
-              'f:volumes':
-                .: {}
-                'k:{"name":"dshm"}':
-                  .: {}
-                  'f:emptyDir':
-                    .: {}
-                    'f:medium': {}
-                  'f:name': {}
-    - manager: kube-controller-manager
-      operation: Update
-      apiVersion: apps/v1
-      time: '2022-01-03T06:14:45Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:annotations':
-            .: {}
-            'f:deployment.kubernetes.io/revision': {}
-        'f:status':
-          'f:availableReplicas': {}
-          'f:conditions':
-            .: {}
-            'k:{"type":"Available"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:lastUpdateTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-            'k:{"type":"Progressing"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:lastUpdateTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-          'f:observedGeneration': {}
-          'f:readyReplicas': {}
-          'f:replicas': {}
-          'f:updatedReplicas': {}
-      subresource: status
-  namespace: selenium-infra
-  labels:
-    app: selenium-node-chrome
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: selenium-node-chrome
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: selenium-node-chrome
-    spec:
-      volumes:
-        - name: dshm
-          emptyDir:
-            medium: Memory
-      containers:
-        - resources:
-            limits:
-              cpu: '1'
-              memory: 2Gi
-          terminationMessagePath: /dev/termination-log
-          name: selenium-node-chrome
-          env:
-            - name: SE_EVENT_BUS_HOST
-              value: selenium-hub
-            - name: SE_EVENT_BUS_SUBSCRIBE_PORT
-              value: '4443'
-            - name: SE_EVENT_BUS_PUBLISH_PORT
-              value: '4442'
+  annotations:
+    description: "Selenium Node with Google Chrome browser"
+    iconClass: "icon-selenium"
+    tags: "selenium,node,chrome"
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: selenium-node-chrome
+  spec:
+    strategy:
+      type: Recreate
+    replicas: 1
+    selector:
+      browser: chrome
+    template:
+      metadata:
+        name: selenium-node-chrome-master
+        labels:
+          browser: chrome
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: ${JAVA_OPTS}
+          - name: SE_OPTS
+            value: ${SE_OPTS}
+          - name: HUB_PORT_4444_TCP_ADDR
+            value: ${HUB_PORT_4444_TCP_ADDR}
+          - name: HUB_PORT_4444_TCP_PORT
+            value: ${HUB_PORT_4444_TCP_PORT}
+          - name: REMOTE_HOST
+            value: ${REMOTE_HOST}
+          - name: SE_EVENT_BUS_HOST
+            value: ${SE_EVENT_BUS_HOST}
+          - name: SE_EVENT_BUS_PUBLISH_PORT
+            value: ${SE_EVENT_BUS_PUBLISH_PORT}
+          - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+            value: ${SE_EVENT_BUS_SUBSCRIBE_PORT}
+          image: selenium/node-chrome:4.0.0
+          name: master
           ports:
-            - containerPort: 5555
-              protocol: TCP
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: dshm
-              mountPath: /dev/shm
-          terminationMessagePolicy: File
-          image: 'selenium/node-chrome:4.1.1-20211217'
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      securityContext: {}
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-status:
-  observedGeneration: 61
-  replicas: 3
-  updatedReplicas: 3
-  readyReplicas: 3
-  availableReplicas: 3
-  conditions:
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2022-01-03T05:40:30Z'
-      lastTransitionTime: '2021-12-28T10:08:53Z'
-      reason: NewReplicaSetAvailable
-      message: >-
-        ReplicaSet "selenium-node-chrome-845599c754" has successfully
-        progressed.
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2022-01-03T06:14:45Z'
-      lastTransitionTime: '2022-01-03T06:14:45Z'
-      reason: MinimumReplicasAvailable
-      message: Deployment has minimum availability.
+          - containerPort: 4444
+            protocol: TCP
+          - containerPort: 5555
+            protocol: TCP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: selenium-node-chrome
+  spec:
+    selector:
+      browser: chrome
+    type: ClusterIP
+    ports:
+    - name: node-port
+      port: 5555
+      targetPort: 5555
+      protocol: TCP
+    - name: node-port-grid
+      port: 4444
+      targetPort: 4444
+      protocol: TCP
+parameters:
+  - name: JAVA_OPTS
+    description: Options for the Java command
+    value: "-Xmx512m -Dselenium.LOGGER.level=WARNING"
+  - name: SE_OPTS
+    description: Options for the Node
+    value: ""
+  - name: HUB_PORT_4444_TCP_ADDR
+    description: The Hub to connect to
+    value: "selenium-hub"
+  - name: HUB_PORT_4444_TCP_PORT
+    description: The Hub port to connect to
+    value: "4444"
+  - name: REMOTE_HOST
+    description: The remote host
+    value: ""
+  - name: NODE_ID
+    description: Unique ID assigned to the node
+    generate: expression
+    from: '[a-z]{4}'
+  - name: SE_EVENT_BUS_HOST
+    description: The selenium event hub host
+    value: "selenium-hub"
+  - name: SE_EVENT_BUS_PUBLISH_PORT
+    description: The publish port
+    value: "4442"
+  - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+    description: The subscribe port
+    value: "4443"
