@@ -1,211 +1,121 @@
-kind: Deployment
-apiVersion: apps/v1
+apiVersion: v1
+kind: Template
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: '2'
-  resourceVersion: '16408633'
   name: selenium-hub
-  uid: 597c5dda-970e-44d9-8f2c-77271664a498
-  creationTimestamp: '2021-12-28T10:08:18Z'
-  generation: 24
-  managedFields:
-    - manager: Mozilla
-      operation: Update
-      apiVersion: apps/v1
-      time: '2021-12-28T10:08:18Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:labels':
-            .: {}
-            'f:app': {}
-        'f:spec':
-          'f:progressDeadlineSeconds': {}
-          'f:revisionHistoryLimit': {}
-          'f:selector': {}
-          'f:strategy':
-            'f:rollingUpdate':
-              .: {}
-              'f:maxSurge': {}
-              'f:maxUnavailable': {}
-            'f:type': {}
-          'f:template':
-            'f:metadata':
-              'f:labels':
-                .: {}
-                'f:app': {}
-            'f:spec':
-              'f:containers':
-                'k:{"name":"selenium-hub"}':
-                  'f:image': {}
-                  'f:terminationMessagePolicy': {}
-                  .: {}
-                  'f:resources':
-                    .: {}
-                    'f:limits':
-                      .: {}
-                      'f:cpu': {}
-                      'f:memory': {}
-                  'f:livenessProbe':
-                    .: {}
-                    'f:failureThreshold': {}
-                    'f:httpGet':
-                      .: {}
-                      'f:path': {}
-                      'f:port': {}
-                      'f:scheme': {}
-                    'f:initialDelaySeconds': {}
-                    'f:periodSeconds': {}
-                    'f:successThreshold': {}
-                    'f:timeoutSeconds': {}
-                  'f:readinessProbe':
-                    .: {}
-                    'f:failureThreshold': {}
-                    'f:httpGet':
-                      .: {}
-                      'f:path': {}
-                      'f:port': {}
-                      'f:scheme': {}
-                    'f:initialDelaySeconds': {}
-                    'f:periodSeconds': {}
-                    'f:successThreshold': {}
-                    'f:timeoutSeconds': {}
-                  'f:terminationMessagePath': {}
-                  'f:imagePullPolicy': {}
-                  'f:ports':
-                    .: {}
-                    'k:{"containerPort":4442,"protocol":"TCP"}':
-                      .: {}
-                      'f:containerPort': {}
-                      'f:protocol': {}
-                    'k:{"containerPort":4443,"protocol":"TCP"}':
-                      .: {}
-                      'f:containerPort': {}
-                      'f:protocol': {}
-                    'k:{"containerPort":4444,"protocol":"TCP"}':
-                      .: {}
-                      'f:containerPort': {}
-                      'f:protocol': {}
-                  'f:name': {}
-              'f:dnsPolicy': {}
-              'f:restartPolicy': {}
-              'f:schedulerName': {}
-              'f:securityContext': {}
-              'f:terminationGracePeriodSeconds': {}
-    - manager: kube-controller-manager
-      operation: Update
-      apiVersion: apps/v1
-      time: '2022-01-03T06:04:04Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:annotations':
-            .: {}
-            'f:deployment.kubernetes.io/revision': {}
-        'f:status':
-          'f:availableReplicas': {}
-          'f:conditions':
-            .: {}
-            'k:{"type":"Available"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:lastUpdateTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-            'k:{"type":"Progressing"}':
-              .: {}
-              'f:lastTransitionTime': {}
-              'f:lastUpdateTime': {}
-              'f:message': {}
-              'f:reason': {}
-              'f:status': {}
-              'f:type': {}
-          'f:observedGeneration': {}
-          'f:readyReplicas': {}
-          'f:replicas': {}
-          'f:updatedReplicas': {}
-      subresource: status
-  namespace: selenium-infra
-  labels:
-    app: selenium-hub
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: selenium-hub
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: selenium-hub
-    spec:
-      containers:
-        - resources:
-            limits:
-              cpu: 500m
-              memory: 1000Mi
-          readinessProbe:
-            httpGet:
-              path: /wd/hub/status
-              port: 4444
-              scheme: HTTP
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
-          terminationMessagePath: /dev/termination-log
-          name: selenium-hub
-          livenessProbe:
-            httpGet:
-              path: /wd/hub/status
-              port: 4444
-              scheme: HTTP
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
+  annotations:
+    description: "A Selenium Grid"
+    iconClass: "icon-selenium"
+    tags: "selenium,hub"
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: selenium-hub
+  spec:
+    selector:
+      type: selenium-hub
+    type: ClusterIP
+    ports:
+    - name: web
+      port: 4444
+      targetPort: 4444
+      protocol: TCP
+    - name: node
+      port: 5555
+      targetPort: 5555
+      protocol: TCP
+    - name: publish
+      port: 4442
+      targetPort: 4442
+      protocol: TCP
+    - name: subscribe
+      port: 4443
+      targetPort: 4443
+      protocol: TCP
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: selenium-hub
+  spec:
+    replicas: 1
+    selector:
+      type: selenium-hub
+    template:
+      metadata:
+        labels:
+          type: selenium-hub
+        name: selenium-hub
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: ${JAVA_OPTS}
+          - name: POOL_MAX
+            value: ${POOL_MAX}
+          - name: GRID_NEW_SESSION_WAIT_TIMEOUT
+            value: ${GRID_NEW_SESSION_WAIT_TIMEOUT}
+          - name: GRID_JETTY_MAX_THREADS
+            value: ${GRID_JETTY_MAX_THREADS}
+          - name: GRID_NODE_POLLING
+            value: ${GRID_NODE_POLLING}
+          - name: GRID_CLEAN_UP_CYCLE
+            value: ${GRID_CLEAN_UP_CYCLE}
+          - name: GRID_TIMEOUT
+            value: ${GRID_TIMEOUT}
+          - name: GRID_BROWSER_TIMEOUT
+            value: ${GRID_BROWSER_TIMEOUT}
+          - name: GRID_MAX_SESSION
+            value: ${GRID_MAX_SESSION}
+          - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
+            value: ${GRID_UNREGISTER_IF_STILL_DOWN_AFTER}
+          image: selenium/hub:4.1.0-20211123
+          name: master
           ports:
-            - containerPort: 4444
-              protocol: TCP
-            - containerPort: 4443
-              protocol: TCP
-            - containerPort: 4442
-              protocol: TCP
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: File
-          image: 'selenium/hub:4.1.0-20211123'
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      securityContext: {}
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-status:
-  observedGeneration: 24
-  replicas: 1
-  updatedReplicas: 1
-  readyReplicas: 1
-  availableReplicas: 1
-  conditions:
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2021-12-28T12:43:42Z'
-      lastTransitionTime: '2021-12-28T10:08:18Z'
-      reason: NewReplicaSetAvailable
-      message: ReplicaSet "selenium-hub-646f69f5cd" has successfully progressed.
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2022-01-03T06:04:04Z'
-      lastTransitionTime: '2022-01-03T06:04:04Z'
-      reason: MinimumReplicasAvailable
-      message: Deployment has minimum availability.
+          - containerPort: 4444
+            protocol: TCP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: selenium-hub
+  spec:
+    host: ${HUB_ROUTE}
+    port:
+      targetPort: 4444
+    to:
+      kind: Service
+      name: selenium-hub
+parameters:
+  - name: HUB_ROUTE
+    description: Route name for the Selenium Hub
+  - name: JAVA_OPTS
+    description: Options to pass to the java command
+    value: "-Xmx512m"
+  - name: POOL_MAX
+    description: Max thread count for incoming and outgoing connections
+    value: "30000"
+  - name: GRID_NEW_SESSION_WAIT_TIMEOUT
+    description: The timeout to wait for new sessions
+    value: "30"
+  - name: GRID_JETTY_MAX_THREADS
+    description: Max Threads for Jetty server
+    value: "100"
+  - name: GRID_NODE_POLLING
+    description: Node Polling setting
+    value: "150"
+  - name: GRID_CLEAN_UP_CYCLE
+    description: How long to wait until cleanup on nodes
+    value: "300"
+  - name: GRID_TIMEOUT
+    description: The timeout for the grid
+    value: "300"
+  - name: GRID_BROWSER_TIMEOUT
+    description: The timeout for the browser
+    value: "30"
+  - name: GRID_MAX_SESSION
+    description: How many sessions max
+    value: "3"
+  - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
+    description: Time to wait before unregistering nodes
+    value: "500"
+labels:
+  selenium-hub: master
