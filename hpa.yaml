@@ -41,7 +41,7 @@ spec:
     kind: DeploymentConfig
     name: selenium-node-chrome
     apiVersion: apps.openshift.io/v1
-  minReplicas: 4
+  minReplicas: 2
   maxReplicas: 20
   metrics:
     - type: Resource
