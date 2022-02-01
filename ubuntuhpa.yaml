@@ -1,0 +1,42 @@
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2beta2
+metadata:
+  name: ubuntuhpa
+  namespace: containertest
+  uid: da3ef51e-cdda-4f0b-98fe-b24d29b9cd5c
+  resourceVersion: '34525363'
+  creationTimestamp: '2022-02-01T05:19:41Z'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: autoscaling/v2beta2
+      time: '2022-02-01T05:19:41Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:maxReplicas': {}
+          'f:metrics': {}
+          'f:minReplicas': {}
+          'f:scaleTargetRef':
+            'f:apiVersion': {}
+            'f:kind': {}
+            'f:name': {}
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: ubuntu
+    apiVersion: apps/v1
+  minReplicas: 4
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 10
+status:
+  currentReplicas: 0
+  desiredReplicas: 0
+  currentMetrics: null
+  conditions: null
